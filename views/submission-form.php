@@ -116,7 +116,7 @@ if (isset($authorName)) {
 			<label for="user-submitted-avatar"><?php _e('Upload an Image', 'usp'); ?></label>
 			<div id="usp-upload-message">If you have a <a href="https://gravatar.com" target="_blank">Gravatar</a>, we will use that for your avatar/headshot. If you do not have a gravatar, you can upload a custom headshot here.</div>
 			<div id="user-submitted-image">
-				<input name="user-submitted-avatar" type="file" size="25" class="usp-input usp-clone">
+				<input name="user-submitted-avatar[]" type="file" size="25" class="usp-input usp-clone">
 			</div>
 		</fieldset>
 		<?php } ?>

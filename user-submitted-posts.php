@@ -109,13 +109,14 @@ function usp_checkForPublicSubmission() {
 		} else {
 			$fileData = '';
 		}
-		if (isset($_FILES['user-submitted-avatar'])) {
-			$avata_data = $_FILES['user-submitted-avatar'];
+		
+		if(isset($_FILES['user-submitted-avatar'])) {
+			$avatar_data = $_FILES['user-submitted-avatar'];
 		} else {
-			$avata_data = '';
+			$avatar_data = '';
 		}
 
-		$publicSubmission = usp_createPublicSubmission($title, $authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData,$avata_data);
+		$publicSubmission = usp_createPublicSubmission($title, $authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData,$avatar_data);
 		//$publicSubmission = usp_createPublicSubmission($title, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData);
 
 		if (false == ($publicSubmission)) {
@@ -276,7 +277,7 @@ function usp_replaceAuthor($author) {
 }
 
 // create the form
-function usp_createPublicSubmission($title,$authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData,$avata_data) {
+function usp_createPublicSubmission($title,$authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData,$avatar_data) {
 //function usp_createPublicSubmission($title, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData) {
 /* if(function_exists('get_coauthors')){
 add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
@@ -393,7 +394,7 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 		$debug  .= "Adding to the post failed";
 	}
 	
-	if(!empty($debug)){
+	if(empty($debug)){
 		$coAuthorsWorked = true;
 	} else {
 		$coAuthorsWorked = false;
@@ -425,6 +426,7 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 		$attachmentIds = array();
 		$imageCounter = 0;
 
+		
 		if ($fileData !== '') {
 			for ($i = 0; $i < count($fileData['name']); $i++) {
 				$imageInfo = @getimagesize($fileData['tmp_name'][$i]);
@@ -458,30 +460,36 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 				}
 			}
 		}
+		
 		//added
-		if ($avata_data !== '') {
-				for ($i = 0; $i < count($avata_data['name']); $i++) {
-				$imageInfo = @getimagesize($avata_data['tmp_name'][$i]);
+		
+			$imageCounter = 0;
+			if ($avatar_data !== '') {
+			for ($i = 0; $i < count($avatar_data['name']); $i++) {
+				$imageInfo = @getimagesize($avatar_data['tmp_name'][$i]);
 				if (false === $imageInfo || !usp_imageIsRightSize($imageInfo[0], $imageInfo[1])) {
 					continue;
 				}
 				$key = "public-submission-attachment-{$i}";
 	
 				$_FILES[$key] = array();
-				$_FILES[$key]['name']     = $avata_data['name'][$i];
-				$_FILES[$key]['tmp_name'] = $avata_data['tmp_name'][$i];
-				$_FILES[$key]['type']     = $avata_data['type'][$i];
-				$_FILES[$key]['error']    = $avata_data['error'][$i];
-				$_FILES[$key]['size']     = $avata_data['size'][$i];
+				$_FILES[$key]['name']     = $avatar_data['name'][$i];
+				$_FILES[$key]['tmp_name'] = $avatar_data['tmp_name'][$i];
+				$_FILES[$key]['type']     = $avatar_data['type'][$i];
+				$_FILES[$key]['error']    = $avatar_data['error'][$i];
+				$_FILES[$key]['size']     = $avatar_data['size'][$i];
 	
 				$attachmentId = media_handle_upload($key, $NewCoAuthor);
 		
 				if (!is_wp_error($attachmentId) && wp_attachment_is_image($attachmentId)) {
-					set_post_thumbnail($NewCoAuthor, $attachmentId);
-					add_post_meta($newPost, "co_author_avatar_upload", "Success"); 
-					} else {
-					add_post_meta($newPost, "co_author_avatar_upload", "Failed"); 
-					//wp_delete_attachment($attachmentId);
+					$attachmentIds[] = $attachmentId;
+					//add_post_meta($newPost, $usp_post_meta_Image, wp_get_attachment_url($attachmentId));
+					if($imageCounter == 0){
+						set_post_thumbnail($NewCoAuthor, $attachmentId);
+					}
+					$imageCounter++;
+				} else {
+					wp_delete_attachment($attachmentId);
 				}
 			}
 		}
