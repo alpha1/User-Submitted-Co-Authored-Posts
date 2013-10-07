@@ -109,8 +109,13 @@ function usp_checkForPublicSubmission() {
 		} else {
 			$fileData = '';
 		}
+		if (isset($_FILES['user-submitted-avatar'])) {
+			$avata_data = $_FILES['user-submitted-avatar'];
+		} else {
+			$avata_data = '';
+		}
 
-		$publicSubmission = usp_createPublicSubmission($title, $authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData);
+		$publicSubmission = usp_createPublicSubmission($title, $authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData,$avata_data);
 		//$publicSubmission = usp_createPublicSubmission($title, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData);
 
 		if (false == ($publicSubmission)) {
@@ -271,7 +276,7 @@ function usp_replaceAuthor($author) {
 }
 
 // create the form
-function usp_createPublicSubmission($title,$authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData) {
+function usp_createPublicSubmission($title,$authorEmail,$authorBio, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData,$avata_data) {
 //function usp_createPublicSubmission($title, $content, $authorName, $authorID, $authorUrl, $tags, $category, $fileData) {
 /* if(function_exists('get_coauthors')){
 add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
@@ -321,46 +326,80 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 			$postData['post_status'] = 'publish';
 		}
 	}
-	//Added
-	if(function_exists('get_coauthors')){
-	$coAuthorData = array();
-	$coAuthorData['post_type']   = 'guest-author';
-	$coAuthorData['post_author']  = $authorID;
-	$coAuthorData['user_ID']  = $authorID;
-	$coAuthorData['post_status'] = 'publish';
-	$coAuthorData['post_title'] = $authorName;
-	$coAuthorData['post_excerpt'] = '';
-	$coAuthorData['post_content'] = ' ';
-	$coAuthorData['comment_status'] = 'Closed';
-	$coAuthorData['ping_status'] = 'Closed';
-	$coAuthorData['post_name'] = 'cap-'. strtolower(str_replace(' ', '-', $authorName));
-	$NewCoAuthor = wp_insert_post($coAuthorData, true);
-		if ($NewCoAuthor) {
-			$coAuthorsWorked = true;
-			//wp_set_post_terms($NewCoAuthor,array(), 'guest-author', false);
-			add_post_meta($NewCoAuthor, 'cap-display_name', $authorName, false);
-			add_post_meta($NewCoAuthor, 'cap-first_name', '', false);
-			add_post_meta($NewCoAuthor, 'cap-last_name','', false);
-			add_post_meta($NewCoAuthor, 'cap-user_login', '', false);
-			add_post_meta($NewCoAuthor, 'cap-user_email',$authorEmail, true); //TODO: Check for true or false, if false, this user already exists
-			add_post_meta($NewCoAuthor, 'cap-website', $authorUrl, false);
-			add_post_meta($NewCoAuthor, 'cap-aim', "", false); //fills nothing
-			add_post_meta($NewCoAuthor, 'cap-yahooim', "", false);  //fills nothing
-			add_post_meta($NewCoAuthor, 'cap-jabber', "", false); //fills nothing
-			add_post_meta($NewCoAuthor, 'cap-description', $authorBio, false); 
-		
-		} else {
-		$coAuthorsWorked = false;
-		//print_r($NewCoAuthor);
-		}
+	
+	if(class_exists('CoAuthors_Guest_Authors')){
+			global $coauthors_plus;
+			
+		$new_coauthor = new CoAuthors_Guest_Authors;
+		$fields = $new_coauthor->get_guest_author_fields();
+		// Create the primary post object
+		$postname =  'cap-'. strtolower(str_replace(' ', '-', $authorName));
+		$new_post = array(
+				'post_title'      => $authorName,
+				'post_name'       =>$postname,
+				'post_type'       => $new_coauthor->post_type
+		);
+	$NewCoAuthor = wp_insert_post( $new_post, true );
+		if ( is_wp_error( $NewCoAuthor ) )
+			return $NewCoAuthor;
+	//co-author post id: $NewCoAuthor
+	
+	add_post_meta($NewCoAuthor, 'cap-display_name', $authorName, false);
+	add_post_meta($NewCoAuthor, 'cap-first_name', '', false);
+	add_post_meta($NewCoAuthor, 'cap-last_name','', false);
+	add_post_meta($NewCoAuthor, 'cap-user_login', strtolower(str_replace(' ', '-', $authorName)), false);
+	add_post_meta($NewCoAuthor, 'cap-user_email',$authorEmail, true); //TODO: Check for true or false, if false, this user already exists
+	add_post_meta($NewCoAuthor, 'cap-website', $authorUrl, false);
+	add_post_meta($NewCoAuthor, 'cap-aim', "", false); //fills nothing
+	add_post_meta($NewCoAuthor, 'cap-yahooim', "", false);  //fills nothing
+	add_post_meta($NewCoAuthor, 'cap-jabber', "", false); //fills nothing
+	add_post_meta($NewCoAuthor, 'cap-description', $authorBio, false); 
+	//Add Featured Image/headshot
+	
+	
+	//$author_term = $coauthors_plus->update_author_term( $new_coauthor->get_guest_author_by( 'ID', $NewCoAuthor ) );
+	$slug = 'cap-'. strtolower(str_replace(' ', '-', $authorName));
+	$description = "$authorName $slug $authorEmail";
+	$args = array(
+				'slug' => $slug,
+				'description' => $description
+	);
+	$debug_on = false;
+	$debug = "";
+	$term_id = wp_insert_term(strtolower(str_replace(' ', '-', $authorName)), 'author', $args );
+	
+	if($term_id){
 	} else {
-	$coAuthorsWorked = false;
+		$debug .= "Creating Term Failed";
 	}
-	//end Added
+	
+	$co_auth_terms =  wp_set_post_terms($NewCoAuthor, array($slug), 'author', false );
+	if($co_auth_terms){
+	} else {
+		$debug  .= "Adding Term Failed";
+	}
+	
+	if(wp_set_object_terms($co_auth_terms, $co_auth_terms, 'author',true)){
+	} else {
+		$debug .= "Adding Object terms failed";
+	}
+	
+	
+	}
+	
 	$newPost = wp_insert_post($postData);
-
+	if(wp_set_post_terms( $newPost, array($slug), 'author', false )){
+	} else {
+		$debug  .= "Adding to the post failed";
+	}
+	
+	if(!empty($debug)){
+		$coAuthorsWorked = true;
+	} else {
+		$coAuthorsWorked = false;
+	}
+	
 	if ($newPost) {
-		//wp_set_post_terms($newPost, $NewCoAuthor, 'author', true);
 		wp_set_post_tags($newPost, $tags);
 		wp_set_post_categories($newPost, array($category));
 
@@ -368,7 +407,11 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 			$to = $usp_options['usp_email_address'];
 			if ($to !== '') {
 				$subject = '['. get_bloginfo("name") .'] New user-submitted Post ';
-				$message = 'Hey, there is a new user-submitted post waiting for you. Go <a href="'. get_edit_post_link($newPost) .'">Here to edit the post</a>';
+				$message = "Hey, there is a new user-submitted post waiting for you. <br>\n Edit Post: ". site_url() ."/wp-admin/post.php?post=$newPost&action=edit<br>\n Edit Guest-Author:". site_url() ."/wp-admin/post.php?post=$NewCoAuthor&action=edit";
+				
+				if($debug_on){
+				$message .= "<Br>\n Debug:". $debug;
+				}
 				wp_mail($to, $subject, $message);
 			}
 		}
@@ -377,6 +420,8 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 			require_once (ABSPATH . '/wp-admin/includes/file.php');
 			require_once (ABSPATH . '/wp-admin/includes/image.php');
 		}
+		
+		
 		$attachmentIds = array();
 		$imageCounter = 0;
 
@@ -399,8 +444,12 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 		
 				if (!is_wp_error($attachmentId) && wp_attachment_is_image($attachmentId)) {
 					$attachmentIds[] = $attachmentId;
-					add_post_meta($newPost, $usp_post_meta_Image, wp_get_attachment_url($attachmentId));
+					//add_post_meta($newPost, $usp_post_meta_Image, wp_get_attachment_url($attachmentId));
+					if($imageCounter == 0){
+						set_post_thumbnail($newPost, $attachmentId);
+					}
 					$imageCounter++;
+
 				} else {
 					wp_delete_attachment($attachmentId);
 				}
@@ -409,6 +458,35 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 				}
 			}
 		}
+		//added
+		if ($avata_data !== '') {
+				for ($i = 0; $i < count($avata_data['name']); $i++) {
+				$imageInfo = @getimagesize($avata_data['tmp_name'][$i]);
+				if (false === $imageInfo || !usp_imageIsRightSize($imageInfo[0], $imageInfo[1])) {
+					continue;
+				}
+				$key = "public-submission-attachment-{$i}";
+	
+				$_FILES[$key] = array();
+				$_FILES[$key]['name']     = $avata_data['name'][$i];
+				$_FILES[$key]['tmp_name'] = $avata_data['tmp_name'][$i];
+				$_FILES[$key]['type']     = $avata_data['type'][$i];
+				$_FILES[$key]['error']    = $avata_data['error'][$i];
+				$_FILES[$key]['size']     = $avata_data['size'][$i];
+	
+				$attachmentId = media_handle_upload($key, $NewCoAuthor);
+		
+				if (!is_wp_error($attachmentId) && wp_attachment_is_image($attachmentId)) {
+					set_post_thumbnail($NewCoAuthor, $attachmentId);
+					add_post_meta($newPost, "co_author_avatar_upload", "Success"); 
+					} else {
+					add_post_meta($newPost, "co_author_avatar_upload", "Failed"); 
+					//wp_delete_attachment($attachmentId);
+				}
+			}
+		}
+		//end added
+		
 		if (count($attachmentIds) < $usp_options['min-images']) {
 			foreach ($attachmentIds as $idToDelete) {
 				wp_delete_attachment($idToDelete);
@@ -416,6 +494,8 @@ add_action( 'admin_init', array( $this, 'handle_create_guest_author_action' ) );
 			wp_delete_post($newPost);
 			return false;
 		}
+		
+		
 		if(!$coAuthorsWorked){
 			//if the co-authors failed or doesn't exist, drop this info the custom fields. If it worked, we don't need this junk in the database
 			update_post_meta($newPost, $usp_post_meta_IsSubmission, true);
@@ -791,6 +871,12 @@ function usp_render_form() {
 										<option <?php if ($usp_options['usp_images'] == 'show') echo 'selected="selected"'; ?> value="show"><?php _e('Show', 'usp'); ?></option>
 										<option <?php if ($usp_options['usp_images'] == 'hide') echo 'selected="selected"'; ?> value="hide"><?php _e('Hide', 'usp'); ?></option>
 									</select> <span><?php _e('Post Images', 'usp'); ?></span>
+								</li>
+								<li>
+									<select name="usp_options[usp_co_author_avatar]">
+										<option <?php if ($usp_options['usp_co_author_avatar'] == 'show') echo 'selected="selected"'; ?> value="show"><?php _e('Show', 'usp'); ?></option>
+										<option <?php if ($usp_options['usp_co_author_avatar'] == 'hide') echo 'selected="selected"'; ?> value="hide"><?php _e('Hide', 'usp'); ?></option>
+									</select> <span><?php _e('Co-Authors-Plus Avatar', 'usp'); ?></span>
 								</li>
 								<li>
 									<select name="usp_options[usp_captcha]">

@@ -38,7 +38,7 @@ if (isset($authorName)) {
 		<!--Added-->
 		<?php if ($usp_options['usp_email'] == 'show'){ ?>
 		<fieldset class="usp-email">
-			<label for="user-submitted-email"><?php _e('Your Name', 'usp'); ?></label>
+			<label for="user-submitted-email"><?php _e('Your Email', 'usp'); ?></label>
 			<input name="user-submitted-email" type="text" value="" data-required="true" placeholder="<?php _e('Your Email', 'usp'); ?>" class="usp-input">
 		</fieldset>
 		<?php } ?>
@@ -89,6 +89,7 @@ if (isset($authorName)) {
 				<textarea name="user-submitted-content" rows="5" data-required="true" placeholder="<?php _e('Post Content', 'usp'); ?>" class="usp-textarea"></textarea>
 			<?php } ?>
 		</fieldset>
+		
 		<?php } if ($usp_options['usp_images'] == 'show') { ?>
 		<?php if ($usp_options['max-images'] !== 0) { ?>
 		<fieldset class="usp-images">
@@ -109,6 +110,17 @@ if (isset($authorName)) {
 		</fieldset>
 		<?php } ?>
 		<?php } ?>
+		
+		<?php if ($usp_options['usp_co_author_avatar'] == 'show') { ?>
+		<fieldset class="usp-co_author_avatar">
+			<label for="user-submitted-avatar"><?php _e('Upload an Image', 'usp'); ?></label>
+			<div id="usp-upload-message">If you have a <a href="https://gravatar.com" target="_blank">Gravatar</a>, we will use that for your avatar/headshot. If you do not have a gravatar, you can upload a custom headshot here.</div>
+			<div id="user-submitted-image">
+				<input name="user-submitted-avatar" type="file" size="25" class="usp-input usp-clone">
+			</div>
+		</fieldset>
+		<?php } ?>
+		
 		<fieldset id="coldform_verify" style="display:none;">
 			<label for="user-submitted-verify"><?php _e('Human verification: leave this field empty.', 'usp'); ?></label>
 			<input name="user-submitted-verify" type="text" value="">
