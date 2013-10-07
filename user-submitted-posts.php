@@ -1,15 +1,17 @@
 <?php 
 /*
-	Plugin Name: User Submitted Posts
-	Plugin URI: http://perishablepress.com/user-submitted-posts/
+	Plugin Name: User Submitted Co-Authored-Posts
+	Plugin URI: https://github.com/alpha1/User-Submitted-Co-Authored-Posts/
+	Original Plugin URI: http://perishablepress.com/user-submitted-posts/
 	Description: Enables your visitors to submit posts and images from anywhere on your site.
 	Tags: submit, public, news, share, upload, images, posts, users
-	Author: Jeff Starr
+	Author: Michael Fitzpatrick-Ruth (Original Plugin Jeff Starr)
 	Author URI: http://monzilla.biz/
 	Donate link: http://m0n.co/donate
 	Requires at least: 3.3
+	Requires Co-Authors-Plus
 	Tested up to: 3.5
-	Version: 20130720
+	Version: 20131007
 	Stable tag: trunk
 	License: GPL v2
 */
