@@ -11,7 +11,7 @@
 	Requires at least: 3.3
 	Requires Co-Authors-Plus
 	Tested up to: 3.5
-	Version: 20131007
+	Version: 20131024
 	Stable tag: trunk
 	License: GPL v2
 */
@@ -31,6 +31,83 @@ $usp_post_meta_SubmitterIp  = 'user_submit_ip';
 $usp_post_meta_Submitter    = 'user_submit_name';
 $usp_post_meta_SubmitterUrl = 'user_submit_url';
 $usp_post_meta_Image        = 'user_submit_image';
+
+
+include_once('updater.php');
+if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+$config = array(
+'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+'proper_folder_name' => $eg_plugin_slug, // this is the name of the folder your plugin lives in
+'api_url' => https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
+'raw_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Postsmaster', // the github raw url of your github repo
+'github_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github url of your github repo
+'zip_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts/zipball/master', // the zip url of the github repo
+'sslverify' => true, // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+'requires' => '3.0', // which version of WordPress does your plugin require?
+'tested' => '3.6.1', // which version of WordPress is your plugin tested up to?
+'readme' => 'README.MD' // which file to use as the readme for the version number
+);
+new WP_GitHub_Updater($config);
+}
+
+
+add_filter( 'plugins_api', 'uscap_github_filter_plugin_info', 20, 3 ); 
+function uscap_github_filter_plugin_info($res, $action, $args) {
+	global $eg_plugin_slug;
+	if($args->slug == $eg_plugin_slug){
+		if($action == 'plugin_information' ){
+			//if in details iframe on update core page short-curcuit it
+			if ( did_action( 'install_plugins_pre_plugin-information' )){
+				$changelog = wp_remote_get("https://github.com/alpha1/User-Submitted-Co-Authored-Posts/master/changelog.txt");
+				if($changelog['response']['code'] == "200"){
+					echo nl2br($changelog['body']);
+
+				} else {
+					echo $changelog['response']['code'];
+				} 
+				exit;
+			}
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
+register_activation_hook(__FILE__, 'uscap_pulse_beacon_activate');
+register_deactivation_hook(__FILE__, 'uscap_pulse_beacon_deactivate');
+function uscap_pulse_beacon_activate(){
+uscapgenerator_pulse_beacon("activate");
+}
+function uscap_pulse_beacon_deactivate(){
+uscap_generator_pulse_beacon("deactivate");
+}
+function uscap_pulse_beacon($action){
+	global $eg_plugin_version;
+	global $eg_plugin_slug;
+	global $eg_allow_pulse;
+	global $wp_version;
+	$domain = "pulse.alpha1beta.org";
+	if($eg_allow_pulse){ //if $eg_allow_pulse is false, this will not to sent.
+		$url = 'http://'. $domain .'/pulse-beacon/?action='. $action .'&plugin='.$eg_plugin_slug .'&url='. site_url() .'&wp_version='. $wp_version .'&eg_plugin_version='. $eg_plugin_version;
+		$response = wp_remote_get($url);
+	}
+}
+//==========================================================================
+//Above this line is maintenance and updating functions. These do not affect the plugin's functionality.
+//==========================================================================
+
+
+
+
+
+
+
+
+
+
+
 
 // include template functions
 include ('library/template-tags.php');
