@@ -19,7 +19,7 @@ if (isset($authorName)) {
 		echo $usp_options['usp_form_content'];
 	} ?>
 
-	<form id="usp_form" method="post" data-validate="parsley" enctype="multipart/form-data" action="" novalidate>
+	<form id="usp_form" method="post" data-validate="parsley" enctype="multipart/form-data" action="">
 
 		<?php if (isset($_GET['submission-error']) && $_GET['submission-error'] == '1') { ?>
 		<div id="usp-error-message"><?php echo $usp_options['error-message']; ?></div>
@@ -32,37 +32,37 @@ if (isset($authorName)) {
 		<?php if (($usp_options['usp_name'] == 'show') && ($usp_options['usp_use_author'] == false)) { ?>
 		<fieldset class="usp-name">
 			<label for="user-submitted-name"><?php _e('Your Name', 'usp'); ?></label>
-			<input name="user-submitted-name" type="text" value="" data-required="true" placeholder="<?php _e('Your Name', 'usp'); ?>" class="usp-input">
+			<input name="user-submitted-name" type="text" value="" required data-required="true" placeholder="<?php _e('Your Name', 'usp'); ?>" class="usp-input">
 		</fieldset>
 		
 		<!--Added-->
 		<?php if ($usp_options['usp_email'] == 'show'){ ?>
 		<fieldset class="usp-email">
 			<label for="user-submitted-email"><?php _e('Your Email', 'usp'); ?></label>
-			<input name="user-submitted-email" type="text" value="" data-required="true" placeholder="<?php _e('Your Email', 'usp'); ?>" class="usp-input">
+			<input name="user-submitted-email" type="text" value="" required data-required="true" placeholder="<?php _e('Your Email', 'usp'); ?>" class="usp-input">
 		</fieldset>
 		<?php } ?>
 		<?php if ($usp_options['usp_bio'] == 'show'){ ?>
 		<fieldset class="usp-bio">
 			<label for="user-submitted-bio"><?php _e('A Brief Bio', 'usp'); ?></label>
-			<textarea name="user-submitted-bio" class="usp-input" style="width:60%;" data-required="true"></textarea>
+			<textarea name="user-submitted-bio" class="usp-input" style="width:60%;" data-required="false"></textarea>
 		</fieldset>
 		<?php } ?>
 		<!--End Added-->
 		<?php } if (($usp_options['usp_url'] == 'show') && ($usp_options['usp_use_url'] == false)) { ?>
 		<fieldset class="usp-url">
 			<label for="user-submitted-url"><?php _e('Your URL', 'usp'); ?></label>
-			<input name="user-submitted-url" type="text" value="" data-required="true" data-type="url" placeholder="<?php _e('Your URL', 'usp'); ?>" class="usp-input">
+			<input name="user-submitted-url" type="text" value="" data-required="false" data-type="url" placeholder="<?php _e('Your URL', 'usp'); ?>" class="usp-input">
 		</fieldset>
 		<?php } if ($usp_options['usp_title'] == 'show') { ?>
 		<fieldset class="usp-title">
 			<label for="user-submitted-title"><?php _e('Post Title', 'usp'); ?></label>
-			<input name="user-submitted-title" type="text" value="" data-required="true" placeholder="<?php _e('Post Title', 'usp'); ?>" class="usp-input">
+			<input name="user-submitted-title" type="text" value=""  required data-required="true" placeholder="<?php _e('Post Title', 'usp'); ?>" class="usp-input">
 		</fieldset>
 		<?php } if ($usp_options['usp_tags'] == 'show') { ?>
 		<fieldset class="usp-tags">
 			<label for="user-submitted-tags"><?php _e('Post Tags', 'usp'); ?></label>
-			<input name="user-submitted-tags" id="user-submitted-tags" data-required="true" type="text" value="" placeholder="<?php _e('Post Tags', 'usp'); ?>" class="usp-input">
+			<input name="user-submitted-tags" id="user-submitted-tags" data-required="false" type="text" value="" placeholder="<?php _e('Post Tags', 'usp'); ?>" class="usp-input">
 		</fieldset>
 		<?php } if ($usp_options['usp_captcha'] == 'show') { ?>
 		<fieldset class="usp-captcha">

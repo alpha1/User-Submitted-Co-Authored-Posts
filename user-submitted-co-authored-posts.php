@@ -11,7 +11,7 @@
 	Requires at least: 3.3
 	Requires Co-Authors-Plus
 	Tested up to: 3.6.1
-	Version: 1.1.1
+	Version: 1.1.2
 	Stable tag: trunk
 	License: GPL v2
 */
@@ -82,10 +82,10 @@ function uscap_github_filter_plugin_info($res, $action, $args) {
 register_activation_hook(__FILE__, 'uscap_pulse_beacon_activate');
 register_deactivation_hook(__FILE__, 'uscap_pulse_beacon_deactivate');
 function uscap_pulse_beacon_activate(){
-uscapgenerator_pulse_beacon("activate");
+uscap_pulse_beacon("activate");
 }
 function uscap_pulse_beacon_deactivate(){
-uscap_generator_pulse_beacon("deactivate");
+uscap_pulse_beacon("deactivate");
 }
 function uscap_pulse_beacon($action){
 	global $uscap_plugin_version;
