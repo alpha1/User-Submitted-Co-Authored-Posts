@@ -67,7 +67,7 @@ if (isset($authorName)) {
 		<?php } if ($usp_options['usp_captcha'] == 'show') { ?>
 		<fieldset class="usp-captcha">
 			<label for="user-submitted-captcha"><?php echo $usp_options['usp_question']; ?></label>
-			<input name="user-submitted-captcha" type="text" value="" data-required="true" placeholder="<?php _e('Antispam Question', 'usp'); ?>" class="usp-input" id="user-submitted-captcha">
+			<input name="user-submitted-captcha" type="text" value="" required data-required="true" placeholder="<?php _e('Antispam Question', 'usp'); ?>" class="usp-input" id="user-submitted-captcha">
 		</fieldset>
 		<?php } if (($usp_options['usp_category'] == 'show') && ($usp_options['usp_use_cat'] == false)) { ?>
 		<fieldset class="usp-category">
