@@ -11,7 +11,7 @@
 	Requires at least: 3.3
 	Requires Co-Authors-Plus
 	Tested up to: 3.6.1
-	Version: 20131024
+	Version: 1.1.1
 	Stable tag: trunk
 	License: GPL v2
 */
@@ -23,7 +23,7 @@ $usp_version = '20130720';
 $usp_plugin  = __('User Submitted Posts', 'usp');
 $usp_options = get_option('usp_options');
 $usp_path    = plugin_basename(__FILE__); // '/user-submitted-posts/user-submitted-posts.php';
-$usp_logo    = plugins_url() . '/user-submitted-posts/images/usp-logo.png';
+$usp_logo    = plugins_url() . '/user-submitted-co-authored-posts/images/usp-logo.png';
 $usp_homeurl = 'http://perishablepress.com/user-submitted-posts/';
 
 $usp_post_meta_IsSubmission = 'is_submission';
