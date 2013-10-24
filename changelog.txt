@@ -1,0 +1,6 @@
+==20131024 Initial Public Release==
+Added Github Based Updater/Pulse
+Added Changelog txt file
+Added/changed: How required fields are handled. 
+
+==20131007 Initial Public Release==
