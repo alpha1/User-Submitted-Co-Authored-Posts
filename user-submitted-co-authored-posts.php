@@ -10,7 +10,7 @@
 	Donate link: http://m0n.co/donate
 	Requires at least: 3.3
 	Requires Co-Authors-Plus
-	Tested up to: 3.5
+	Tested up to: 3.6.1
 	Version: 20131024
 	Stable tag: trunk
 	License: GPL v2
@@ -43,7 +43,7 @@ if (is_admin()) { // note the use of is_admin() to double check that this is hap
 $config = array(
 'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
 'proper_folder_name' => $uscap_plugin_slug, // this is the name of the folder your plugin lives in
-'api_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
+'api_url' => 'https://api.github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
 'raw_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts/master', // the github raw url of your github repo
 'github_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github url of your github repo
 'zip_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts/zipball/master', // the zip url of the github repo
