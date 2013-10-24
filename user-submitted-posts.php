@@ -38,7 +38,7 @@ if (is_admin()) { // note the use of is_admin() to double check that this is hap
 $config = array(
 'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
 'proper_folder_name' => $eg_plugin_slug, // this is the name of the folder your plugin lives in
-'api_url' => https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
+'api_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
 'raw_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Postsmaster', // the github raw url of your github repo
 'github_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github url of your github repo
 'zip_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts/zipball/master', // the zip url of the github repo
