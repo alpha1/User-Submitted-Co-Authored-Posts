@@ -43,8 +43,8 @@ if (is_admin()) { // note the use of is_admin() to double check that this is hap
 $config = array(
 'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
 'proper_folder_name' => $uscap_plugin_slug, // this is the name of the folder your plugin lives in
-'api_url' => 'https://api.github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
-'raw_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts/master', // the github raw url of your github repo
+'api_url' => 'https://api.github.com/repos/alpha1/User-Submitted-Co-Authored-Posts', // the github API url of your github repo
+'raw_url' => 'https://raw.github.com/alpha1/User-Submitted-Co-Authored-Posts/master', // the github raw url of your github repo
 'github_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts', // the github url of your github repo
 'zip_url' => 'https://github.com/alpha1/User-Submitted-Co-Authored-Posts/zipball/master', // the zip url of the github repo
 'sslverify' => true, // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
